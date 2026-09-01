@@ -52,4 +52,4 @@ The first responsive pass exposed two `IndexSizeError` console entries while cha
 
 ## Public CI
 
-Pending repository publication at the time of this local record. The final catalog entry records the verified workflow run and commit when available.
+The first public GitHub Actions run, `33548493648`, passed on Node.js 20, 22, and 24 for commit `45d726146e312cd4f068c427d3b80fc30da4f97d`. Each matrix job ran the engine tests, syntax checks, deterministic demo, and README punctuation rule. The final catalog entry records the documentation commit and its replacement CI run.
