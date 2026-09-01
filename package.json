@@ -1,0 +1,16 @@
+{
+  "name": "afterstep",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A compact time-loop puzzle game where recorded routes become cooperating echoes.",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test",
+    "check": "node --check src/game.js && node --check src/levels.js && node --check src/app.js && node --check server.mjs",
+    "demo": "node scripts/demo.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

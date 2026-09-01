@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08111f">
+  <meta name="description" content="Afterstep is a compact time-loop puzzle about cooperating with your recorded routes.">
+  <title>Afterstep</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Afterstep home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span><strong>Afterstep</strong><small>Cooperate with who you were.</small></span>
+      </a>
+      <button id="soundButton" class="icon-button" type="button" aria-pressed="true" title="Toggle sound">Sound on</button>
+    </header>
+
+    <section class="game-card" aria-labelledby="levelTitle">
+      <div class="game-copy">
+        <div>
+          <p id="levelEyebrow" class="eyebrow">Trace 01 / 04</p>
+          <h1 id="levelTitle">First Trace</h1>
+          <p id="lesson" class="lesson"></p>
+        </div>
+        <div class="stats" aria-label="Puzzle status">
+          <div><span>Turn</span><strong id="turnStat">0 / 8</strong></div>
+          <div><span>Echoes</span><strong id="echoStat">0 / 1</strong></div>
+          <div><span>Sigils</span><strong id="sigilStat">0 / 1</strong></div>
+        </div>
+      </div>
+
+      <div class="stage-wrap">
+        <canvas id="game" width="900" height="620" aria-label="Afterstep puzzle board"></canvas>
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        <div id="winPanel" class="win-panel" hidden>
+          <p class="eyebrow">Trace stabilized</p>
+          <h2>All paths agree.</h2>
+          <p id="winSummary"></p>
+          <button id="nextButton" class="primary" type="button">Next trace</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="dpad" aria-label="Movement controls">
+          <button data-move="up" aria-label="Move up">↑</button>
+          <button data-move="left" aria-label="Move left">←</button>
+          <button data-move="wait" aria-label="Wait one turn">•</button>
+          <button data-move="right" aria-label="Move right">→</button>
+          <button data-move="down" aria-label="Move down">↓</button>
+        </div>
+        <div class="actions">
+          <button id="undoButton" type="button">Undo <kbd>Z</kbd></button>
+          <button id="retryButton" type="button">Retry loop <kbd>R</kbd></button>
+          <button id="commitButton" class="primary" type="button">Commit echo <kbd>Enter</kbd></button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p><strong>How it works:</strong> move with arrows or WASD. Commit your route, then its echo replays on the shared clock. Park one echo on each violet sigil and bring the bright traveler to the gold gate.</p>
+      <button id="restartButton" class="text-button" type="button">Restart trace</button>
+    </footer>
+  </main>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
