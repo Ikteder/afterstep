@@ -24,6 +24,7 @@ body {
 button { font: inherit; }
 .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 38px; }
 .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
 .brand { display: flex; gap: 12px; align-items: center; color: inherit; text-decoration: none; }
 .brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid rgba(114,226,255,.45); border-radius: 14px; color: var(--cyan); background: rgba(114,226,255,.08); font-weight: 900; }
 .brand strong, .brand small { display: block; }
@@ -31,6 +32,7 @@ button { font: inherit; }
 .brand small { color: var(--muted); margin-top: 2px; }
 .icon-button, .text-button { border: 0; color: var(--muted); background: transparent; cursor: pointer; }
 .icon-button { border: 1px solid var(--line); border-radius: 999px; padding: 9px 13px; }
+.daily-button[aria-pressed="true"] { border-color: rgba(255,209,102,.55); color: var(--gold); background: rgba(255,209,102,.08); }
 .game-card { overflow: hidden; border: 1px solid var(--line); border-radius: 26px; background: var(--panel); box-shadow: 0 24px 80px rgba(0,0,0,.36); backdrop-filter: blur(18px); }
 .game-copy { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding: 28px 30px 22px; border-bottom: 1px solid var(--line); }
 .eyebrow { margin: 0 0 7px; color: var(--cyan); text-transform: uppercase; letter-spacing: .16em; font-size: .72rem; font-weight: 800; }
@@ -42,6 +44,13 @@ h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: .95; }
 .stats span, .stats strong { display: block; }
 .stats span { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; }
 .stats strong { margin-top: 4px; font-variant-numeric: tabular-nums; }
+.generator-panel { display: grid; grid-template-columns: repeat(3, minmax(120px, auto)) 1fr; align-items: center; gap: 10px 24px; padding: 13px 30px; border-bottom: 1px solid var(--line); background: rgba(165,139,255,.055); }
+.generator-panel[hidden] { display: none; }
+.generator-panel div { min-width: 0; }
+.generator-panel span, .generator-panel strong { display: block; }
+.generator-panel span { color: var(--muted); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+.generator-panel strong { margin-top: 3px; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.generator-panel p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.45; }
 .stage-wrap { position: relative; padding: 20px; background-image: linear-gradient(rgba(255,255,255,.014) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px); background-size: 24px 24px; }
 canvas { display: block; width: 100%; height: min(57vh, 620px); min-height: 390px; border-radius: 18px; background: #081321; }
 .toast { position: absolute; left: 50%; top: 34px; transform: translate(-50%, -12px); padding: 9px 14px; border: 1px solid rgba(255,123,143,.3); border-radius: 999px; background: rgba(34,13,24,.9); color: #ffdce2; opacity: 0; transition: .2s ease; pointer-events: none; }
@@ -71,6 +80,8 @@ footer p { margin: 0; max-width: 850px; }
   .shell { width: min(100% - 18px, 620px); padding-top: 12px; }
   .brand small { display: none; }
   .game-copy { grid-template-columns: 1fr; padding: 22px 20px 18px; }
+  .generator-panel { grid-template-columns: repeat(3, 1fr); padding: 12px 20px; }
+  .generator-panel p { grid-column: 1 / -1; }
   .stats { width: 100%; }
   .stats div { flex: 1; min-width: 0; padding: 9px; }
   .stage-wrap { padding: 10px; }
@@ -84,9 +95,14 @@ footer p { margin: 0; max-width: 850px; }
 }
 
 @media (max-width: 430px) {
+  .brand-mark { width: 38px; height: 38px; }
+  .topbar-actions { gap: 5px; }
+  .icon-button { padding: 8px 9px; font-size: .76rem; }
   .stats span { font-size: .64rem; }
   .stats strong { font-size: .86rem; }
   .dpad { grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 40px); }
   .controls { gap: 8px; }
   canvas { min-height: 310px; }
+  .generator-panel { grid-template-columns: 1fr 1fr; gap: 9px 12px; padding-inline: 14px; }
+  .generator-panel div:nth-child(3) { grid-column: 1 / -1; }
 }

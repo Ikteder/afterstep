@@ -4,6 +4,8 @@
 
 Afterstep is a compact, browser-native time-loop puzzle game. Move through a trace, commit the route, and that route returns as an echo on the next loop. Park one echo on every violet sigil while the bright traveler reaches the gold gate.
 
+Version 1.1 adds a locally generated Daily Trace. Its seed comes from the local date, and the game presents a challenge only after a solver-produced route certificate wins through the same production engine used for play.
+
 The game has no runtime dependencies, accounts, analytics, network calls, or external assets. It runs from a tiny local static server and works with keyboard or on-screen controls.
 
 ## Why this game exists
@@ -13,6 +15,9 @@ Time-loop games often rely on reflexes or a long narrative. Afterstep compresses
 ## Features
 
 - Four authored puzzles that introduce route commitment, multiple echoes, wall-aware planning, undo, and shared-clock timing.
+- A deterministic Daily Trace with generated walls, two or three sigils, and a stable local-date seed.
+- Breadth-first shortest-route certificates that are replayed through the production engine before a generated trace is shown.
+- A visible `Calm`, `Measured`, or `Knotted` route-complexity estimate with its numeric score and shortest route lengths.
 - Pure deterministic game engine separated from Canvas rendering.
 - Echo trails, energized-sigil feedback, responsive board scaling, and a low-distraction visual style.
 - Arrow keys and WASD for movement, Space to wait, Enter to commit, Z to undo, and R to retry the current loop.
@@ -39,7 +44,13 @@ npm run check
 npm run demo
 ```
 
-The test suite checks level structure, legal movement, walls, waiting, echo commitment, replay timing, undo, retry, sigil rules, turn limits, terminal wins, and a complete winning route for all four puzzles. The deterministic demo uses seed `20260831` as run provenance and solves the first trace with one echo in four turns on the final loop.
+The test suite checks level structure, legal movement, walls, waiting, echo commitment, replay timing, undo, retry, sigil rules, turn limits, terminal wins, and a complete winning route for all four authored puzzles. It also sweeps 1,000 seeds and requires every generated certificate to win. The deterministic demos solve the first authored trace and report the generated evidence for seed `20260902`.
+
+## Daily Trace proof boundary
+
+Every echo begins at the same start, ignores collisions, and waits after its stored route ends. The generator uses those rules to find one shortest route to each sigil and one to the exit, then composes and replays them through the game engine. This proves the displayed challenge has at least one winning solution. It does not prove the solution is unique or the most elegant.
+
+The 0 to 100 difficulty score combines wall density, route detour, turn-limit pressure, and echo count. It estimates route complexity only. It is not calibrated to player skill or completion time.
 
 ## Rules
 
@@ -55,6 +66,7 @@ Echoes are phase-like and may overlap each other or the player. Walls still bloc
 ## Project structure
 
 - `src/game.js`: pure state transitions, replay, validation, and win logic.
+- `src/generator.js`: seeded generation, shortest-route certificates, engine replay, and difficulty evidence.
 - `src/levels.js`: four authored puzzle definitions and par values.
 - `src/app.js`: Canvas rendering, input, audio, progression, and responsive behavior.
 - `tests/game.test.js`: engine and complete-solution verification.
@@ -63,7 +75,9 @@ Echoes are phase-like and may overlap each other or the player. Walls still bloc
 
 ## Current limitations
 
-- The release contains four authored puzzles, not a procedural level generator or level editor.
+- Generated puzzles are deterministic daily challenges, not an arbitrary seed browser or level editor.
+- A generated solution is certified as winning but is not guaranteed to be unique.
+- The difficulty estimate is transparent but has not been calibrated with player data.
 - Progress records only the latest unlocked trace. It does not preserve best scores or route replays.
 - The board is Canvas-based. Controls and status have accessible labels, but there is no complete text-grid alternative for screen-reader play.
 - Synthesized audio is intentionally minimal and may remain unavailable until the browser accepts a user gesture.
@@ -71,14 +85,16 @@ Echoes are phase-like and may overlap each other or the player. Walls still bloc
 
 ## Best next improvement
 
-Add a deterministic puzzle generator with a solver that proves every generated trace is winnable and estimates solution difficulty before presenting it to the player.
+Add an optional solver hint that reveals one route at a time, then test whether the route-complexity estimate tracks completion effort in an opt-in, local-only playtest dataset.
 
 ## Documentation
 
 - [Design specification](docs/superpowers/specs/2026-08-31-afterstep.md)
 - [Mechanic decision](docs/decisions/0001-shared-clock-echoes.md)
-- [Verification record](docs/experiments/2026-08-31-verification.md)
-- [Working notes](docs/notes/2026-08-31.md)
+- [Daily generation decision](docs/decisions/0002-proof-carrying-daily-generation.md)
+- [Version 1.0 verification](docs/experiments/2026-08-31-verification.md)
+- [Version 1.1 verification](docs/experiments/2026-09-02-daily-trace-verification.md)
+- [Version 1.1 working notes](docs/notes/2026-09-02.md)
 - [Dataset non-use card](docs/datasets/no-external-dataset.md)
 - [Model non-use card](docs/models/no-model.md)
 

@@ -15,7 +15,10 @@
         <span class="brand-mark" aria-hidden="true">A</span>
         <span><strong>Afterstep</strong><small>Cooperate with who you were.</small></span>
       </a>
-      <button id="soundButton" class="icon-button" type="button" aria-pressed="true" title="Toggle sound">Sound on</button>
+      <div class="topbar-actions">
+        <button id="dailyButton" class="icon-button daily-button" type="button" aria-pressed="false">Daily trace</button>
+        <button id="soundButton" class="icon-button" type="button" aria-pressed="true" title="Toggle sound">Sound on</button>
+      </div>
     </header>
 
     <section class="game-card" aria-labelledby="levelTitle">
@@ -30,6 +33,13 @@
           <div><span>Echoes</span><strong id="echoStat">0 / 1</strong></div>
           <div><span>Sigils</span><strong id="sigilStat">0 / 1</strong></div>
         </div>
+      </div>
+
+      <div id="generatorPanel" class="generator-panel" hidden>
+        <div><span>Local seed</span><strong id="seedStat"></strong></div>
+        <div><span>Difficulty</span><strong id="difficultyStat"></strong></div>
+        <div><span>Shortest routes</span><strong id="routeStat"></strong></div>
+        <p>Difficulty estimates route complexity from walls, detours, route pressure, and echo count. It does not measure player skill.</p>
       </div>
 
       <div class="stage-wrap">

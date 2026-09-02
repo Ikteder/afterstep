@@ -9,6 +9,7 @@ import {
   retryLoop,
   undo
 } from "./game.js";
+import { dateSeed, generateDailyLevel } from "./generator.js";
 import { LEVELS } from "./levels.js";
 
 const canvas = document.querySelector("#game");
@@ -28,11 +29,18 @@ const elements = {
   winPanel: document.querySelector("#winPanel"),
   winSummary: document.querySelector("#winSummary"),
   toast: document.querySelector("#toast"),
-  sound: document.querySelector("#soundButton")
+  sound: document.querySelector("#soundButton"),
+  daily: document.querySelector("#dailyButton"),
+  generatorPanel: document.querySelector("#generatorPanel"),
+  seed: document.querySelector("#seedStat"),
+  difficulty: document.querySelector("#difficultyStat"),
+  routes: document.querySelector("#routeStat")
 };
 
 let levelIndex = Math.min(Number.parseInt(localStorage.getItem("afterstep-level") ?? "0", 10) || 0, LEVELS.length - 1);
 let state = createGame(LEVELS[levelIndex]);
+let dailyMode = false;
+let dailyChallenge = generateDailyLevel(dateSeed());
 let soundEnabled = true;
 let toastTimer;
 
@@ -187,7 +195,9 @@ function renderBoard() {
 function updateUi() {
   const summary = describeState(state);
   elements.title.textContent = state.level.name;
-  elements.eyebrow.textContent = `Trace ${String(state.level.number).padStart(2, "0")} / ${String(LEVELS.length).padStart(2, "0")}`;
+  elements.eyebrow.textContent = dailyMode
+    ? `Daily trace / seed ${state.level.generated.seed}`
+    : `Trace ${String(state.level.number).padStart(2, "0")} / ${String(LEVELS.length).padStart(2, "0")}`;
   elements.lesson.textContent = state.level.lesson;
   elements.turn.textContent = `${summary.turn} / ${summary.turnLimit}`;
   elements.echoes.textContent = `${summary.echoes} / ${summary.maxEchoes}`;
@@ -196,9 +206,21 @@ function updateUi() {
   elements.undo.disabled = state.won || state.currentMoves.length === 0;
   elements.retry.disabled = state.won || state.currentMoves.length === 0;
   elements.winPanel.hidden = !state.won;
+  elements.generatorPanel.hidden = !dailyMode;
+  elements.daily.textContent = dailyMode ? "Return to traces" : "Daily trace";
+  elements.daily.setAttribute("aria-pressed", String(dailyMode));
+  if (dailyMode) {
+    const evidence = dailyChallenge.solution.difficulty;
+    elements.seed.textContent = String(state.level.generated.seed);
+    elements.difficulty.textContent = `${evidence.label} ${evidence.score}/100`;
+    elements.routes.textContent = evidence.routeLengths.join(" · ");
+    canvas.setAttribute("aria-label", `Afterstep generated puzzle board, seed ${state.level.generated.seed}`);
+  } else {
+    canvas.setAttribute("aria-label", "Afterstep puzzle board");
+  }
   if (state.won) {
     elements.winSummary.textContent = `${state.echoes.length} echoes and ${state.turn} turns on the final loop. Par is ${state.level.par.echoes} echoes and ${state.level.par.turns} turns.`;
-    elements.next.textContent = levelIndex === LEVELS.length - 1 ? "Play from the beginning" : "Next trace";
+    elements.next.textContent = dailyMode ? "Replay daily trace" : levelIndex === LEVELS.length - 1 ? "Play from the beginning" : "Next trace";
   }
   renderBoard();
 }
@@ -238,7 +260,7 @@ function doMove(name) {
   tone(state.bumps > previous.bumps ? 145 : 260 + state.turn * 8);
   if (state.won) {
     tone(520, 0.18);
-    localStorage.setItem("afterstep-level", String(Math.min(levelIndex + 1, LEVELS.length - 1)));
+    if (!dailyMode) localStorage.setItem("afterstep-level", String(Math.min(levelIndex + 1, LEVELS.length - 1)));
   }
   updateUi();
 }
@@ -255,9 +277,17 @@ function doCommit() {
 }
 
 function loadLevel(index) {
+  dailyMode = false;
   levelIndex = (index + LEVELS.length) % LEVELS.length;
   state = createGame(LEVELS[levelIndex]);
   localStorage.setItem("afterstep-level", String(levelIndex));
+  updateUi();
+}
+
+function loadDaily() {
+  dailyMode = true;
+  dailyChallenge = generateDailyLevel(dateSeed());
+  state = createGame(dailyChallenge.level);
   updateUi();
 }
 
@@ -267,8 +297,9 @@ document.querySelectorAll("[data-move]").forEach((button) => {
 elements.commit.addEventListener("click", doCommit);
 elements.undo.addEventListener("click", () => { state = undo(state); tone(190); updateUi(); });
 elements.retry.addEventListener("click", () => { state = retryLoop(state); tone(180); updateUi(); });
-elements.restart.addEventListener("click", () => loadLevel(levelIndex));
-elements.next.addEventListener("click", () => loadLevel(levelIndex === LEVELS.length - 1 ? 0 : levelIndex + 1));
+elements.restart.addEventListener("click", () => dailyMode ? loadDaily() : loadLevel(levelIndex));
+elements.next.addEventListener("click", () => dailyMode ? loadDaily() : loadLevel(levelIndex === LEVELS.length - 1 ? 0 : levelIndex + 1));
+elements.daily.addEventListener("click", () => dailyMode ? loadLevel(levelIndex) : loadDaily());
 elements.sound.addEventListener("click", () => {
   soundEnabled = !soundEnabled;
   elements.sound.textContent = soundEnabled ? "Sound on" : "Sound off";
